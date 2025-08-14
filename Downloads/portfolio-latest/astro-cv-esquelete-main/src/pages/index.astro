@@ -56,56 +56,46 @@ import { Icon } from "astro-icon/components";
     </main>
     <Footer class="flex justify-center items-center py-4" />
     
-    <!-- Custom Cursor Element -->
-    <div class="custom-cursor" id="cursor"></div>
-    
     <script>
-      // Custom cursor functionality
-      const cursor = document.getElementById('cursor');
-      let mouseX = 0;
-      let mouseY = 0;
-      let cursorX = 0;
-      let cursorY = 0;
+      // Profile Image Modal Functionality
+      const profileImageContainer = document.getElementById('profileImageContainer');
+      const profileModal = document.getElementById('profileModal');
+      const closeModal = document.getElementById('closeModal');
+      const modalBackdrop = document.getElementById('modalBackdrop');
 
-      // Track mouse movement
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-      });
-
-      // Smooth cursor animation
-      function animateCursor() {
-        const speed = 0.15;
-        cursorX += (mouseX - cursorX) * speed;
-        cursorY += (mouseY - cursorY) * speed;
-        
-        cursor.style.left = cursorX - 10 + 'px';
-        cursor.style.top = cursorY - 10 + 'px';
-        
-        requestAnimationFrame(animateCursor);
+      // Open modal when profile image is clicked
+      if (profileImageContainer) {
+        profileImageContainer.addEventListener('click', () => {
+          profileModal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        });
       }
-      animateCursor();
 
-      // Add hover effects for interactive elements
-      const interactiveElements = document.querySelectorAll('a, button, .btn, input, textarea, select, .toggle');
-      
-      interactiveElements.forEach(element => {
-        element.addEventListener('mouseenter', () => {
-          cursor.classList.add('hover');
-        });
-        
-        element.addEventListener('mouseleave', () => {
-          cursor.classList.remove('hover');
-        });
-      });
+      // Close modal functions
+      function closeProfileModal() {
+        profileModal.classList.add('closing');
+        setTimeout(() => {
+          profileModal.classList.add('hidden');
+          profileModal.classList.remove('closing');
+          document.body.style.overflow = 'auto'; // Restore scrolling
+        }, 300);
+      }
 
-      // Hide cursor when mouse leaves window
-      document.addEventListener('mouseleave', () => {
-        cursor.style.opacity = '0';
-      });
+      // Close modal when close button is clicked
+      if (closeModal) {
+        closeModal.addEventListener('click', closeProfileModal);
+      }
 
-      document.addEventListener('mouseenter', () => {
-        cursor.style.opacity = '1';
+      // Close modal when backdrop is clicked
+      if (modalBackdrop) {
+        modalBackdrop.addEventListener('click', closeProfileModal);
+      }
+
+      // Close modal when Escape key is pressed
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !profileModal.classList.contains('hidden')) {
+          closeProfileModal();
+        }
       });
     </script>
   </body>
@@ -114,93 +104,18 @@ import { Icon } from "astro-icon/components";
 <style is:global>
   body {
     font-family: "DM Sans Variable", sans-serif;
-    cursor: none; /* Hide default cursor */
+    cursor: default;
   }
 
-  /* Custom Retro Cursor */
-  .custom-cursor {
-    position: fixed;
-    width: 20px;
-    height: 20px;
-    background: linear-gradient(45deg, #00ffff, #ff00ff);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    mix-blend-mode: difference;
-    transition: transform 0.1s ease;
-    box-shadow: 
-      0 0 10px #00ffff,
-      0 0 20px #00ffff,
-      0 0 30px #00ffff;
+  /* Simple Mickey Mouse Hand Cursor Effects */
+  a, button, .btn, input, textarea, select, .profile-image-container {
+    cursor: pointer;
   }
 
-  .custom-cursor::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 255, 255, 0.1);
-    border: 2px solid rgba(0, 255, 255, 0.3);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 1;
-    }
-    100% {
-      transform: translate(-50%, -50%) scale(1.5);
-      opacity: 0;
-    }
-  }
-
-  /* Cursor hover effects */
-  .custom-cursor.hover {
-    transform: scale(1.5);
-    background: linear-gradient(45deg, #ff00ff, #00ffff);
-    box-shadow: 
-      0 0 15px #ff00ff,
-      0 0 25px #ff00ff,
-      0 0 35px #ff00ff;
-  }
-
-  /* Interactive elements cursor effect */
-  a, button, .btn, input, textarea, select {
-    cursor: none;
-  }
-
+  /* Hover effects for interactive elements */
   a:hover, button:hover, .btn:hover {
-    position: relative;
-  }
-
-  a:hover::after, button:hover::after, .btn:hover::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 255, 255, 0.1);
-    border-radius: 8px;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    animation: retro-glow 0.3s ease;
-  }
-
-  @keyframes retro-glow {
-    0% {
-      transform: translate(-50%, -50%) scale(0.8);
-      opacity: 0;
-    }
-    100% {
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 1;
-    }
+    transform: translateY(-1px);
+    transition: transform 0.2s ease;
   }
 
   @media (min-width: 768px) {
